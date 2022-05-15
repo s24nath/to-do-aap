@@ -14,35 +14,37 @@
 
 <body>
     <div class="container">
-        <form action="#" class="custom_form row pt-5" id="adding_task">
-            <div class="form-group col-md-10">
+        <form action="#" class="custom_form row custom_row pt-5" id="adding_task">
+            <div class="form-group col-md-9">
                 <input type="text" class="form-control" id="task_input"/>
             </div>
-            <button type="button" class="btn btn-success col-md-2">Add Task</button>
+            <div class="col-md-3">                
+                <button type="submit" class="btn btn-success task-submit-btn">Add Task</button>
+            </div>
         </form>
-        <ul class="nav nav-tabs custom_nav_tabs">
-            <li class="nav-item">
-                <a class="nav-link active" href="#">All</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="#">Completed</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="#">Link</a>
-            </li>
-        </ul>
+        <div class="row custom_row">
+            <div class="col-md-12">                
+                <ul class="nav nav-tabs custom_nav_tabs">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="#">All</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Completed</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Link</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
         <!-- Tab Content -->
-        <ul class="tab_content_list p-0">
-            <li class="list-group-item">
-                <div class="overlay">
-                    <div class="center_y d-flex justify-content-end">
-                        <div class="option"><i class="fa fa-pencil"></i></div>
-                        <div class="option"><i class="fa fa-remove"></i></div>
-                    </div>
-                </div>
-                as
-            </li>
-        </ul>
+        <div class="row custom_row">
+            <div class="col-md-12">    
+                <ul id="tab_content_list" class="p-0">
+
+                </ul>
+            </div>
+        </div>
     </div>
 
     <script src="js/script.js"></script>
