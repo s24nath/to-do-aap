@@ -89,3 +89,8 @@ ul {
     height: 1px;
     background-color: gray;
 }
+.task-checked {
+    text-decoration: line-through;
+    text-decoration-color: gray;
+    color: gray;
+}
