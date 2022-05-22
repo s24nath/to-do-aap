@@ -5,7 +5,7 @@ const tabContentList = document.querySelector(`#tab_content_list`); // List of t
 const navTabLinksList = document.querySelectorAll('.nav-link'); // Tab links 
 
 let todoListDataContainerGlobal = [];
-let editMode = false;
+let inEditMode = false;
 let editTaskId;
 
 // Function definition to create task data in Local Storage
@@ -37,6 +37,14 @@ const updateTaskStatus = (currentTask) => {
     });
 };
 
+// Function definition for editing each task 
+const editTaskName = (taskId) => {
+    inEditMode = true;
+    editTaskId = taskId;
+    taskInputValue.value = todoListDataContainerGlobal[taskId].text;
+    taskInputValue.focus();
+};
+
 // Function definition for displaying task list
 const displayTasks = () => {   
     let taskListHTML = ''; 
@@ -62,6 +70,14 @@ const displayTasks = () => {
     actionBtnFunctionality();
 };
 
+// Function definition for deleting each task
+const deleteTask = (deleteTaskIndex) => {
+    console.log(deleteTaskIndex);
+    todoListDataContainerGlobal.splice(deleteTaskIndex, 1);
+    setToLocalStorage();
+    displayTasks();
+};
+
 // Letting all the DOM elements to be loaded first
 document.addEventListener('DOMContentLoaded', function() {
     getFromLocalStorage();
@@ -72,18 +88,19 @@ document.addEventListener('DOMContentLoaded', function() {
         event.preventDefault();
         let taskEntered = String(taskInputValue.value);        
         if (taskEntered.length !== 0) {
-            if(!editMode) {
+            if(!inEditMode) {
                 const taskData = {
                     text: taskEntered,
                     isTaskChecked: false,
                     uniqueTimeStamp: Date.now()
                 };
-                todoListDataContainerGlobal.push(taskData);
-                setToLocalStorage();
-                taskInputValue.value = "";
+                todoListDataContainerGlobal.push(taskData);                                
             } else {
-
+                todoListDataContainerGlobal[editTaskId].text = taskInputValue.value;
+                inEditMode = false;
             }
+            setToLocalStorage();
+            taskInputValue.value = "";
             displayTasks();
         } else {
             console.log("No value");
@@ -99,11 +116,10 @@ const actionBtnFunctionality = () => {
         let actionList = currentElement.nextElementSibling;
         currentElement.addEventListener('click', (event) => {
             event.stopPropagation();
-            actionBtnAll.forEach((currentElement) => {
-                if (event.target !== currentElement) {                    
-                    currentElement.nextElementSibling.classList.remove('active');
-                }
-            });
+            let lastActiveActionList = tabContentList.getElementsByClassName("active")[0];
+            if (lastActiveActionList) {
+                lastActiveActionList.classList.remove("active");
+            }
             if (!actionList.classList.contains('active')) {
                 actionList.classList.add('active');
             } else {
@@ -113,9 +129,9 @@ const actionBtnFunctionality = () => {
         updateTaskStatus(actionList.parentElement);
         actionList.addEventListener('click', (event) => {
             if(event.target === actionList.children[0]) {
-                console.log("Clicked on Edit");
+                editTaskName(actionList.parentElement.dataset.id);
             } else if (event.target === actionList.children[2]) {
-                console.log("Clicked on Delete");
+                deleteTask(actionList.parentElement.dataset.id);
             } 
         });
     });
@@ -126,3 +142,10 @@ const actionBtnFunctionality = () => {
     });
 };
 
+
+
+// actionBtnAll.forEach((currentElement) => {
+//     if (event.target !== currentElement) {                    
+//         currentElement.nextElementSibling.classList.remove('active');
+//     }
+// });
