@@ -3,10 +3,29 @@ const taskInputForm = document.querySelector('#adding_task'); // Input form
 const taskInputValue = document.querySelector('#task_input'); // Input box in the form for getting the value provided 
 const tabContentList = document.querySelector(`#tab_content_list`); // List of tasks
 const navTabLinksList = document.querySelectorAll('.nav-link'); // Tab links 
+const filterNavLinks = document.querySelectorAll('.filter_nav_link');
+const filterNavLinksParentWrapper = document.querySelector('#navigation_tab_section');
+const emptyTaskValue = document.querySelector('#empty_task_value');
+const doubleClickSuggestion = document.querySelector('#double_click_suggestion');
 
 let todoListDataContainerGlobal = [];
 let inEditMode = false;
 let editTaskId;
+let currentTabFilter = "all";
+
+const filterTask = () => {
+    filterNavLinks.forEach((currentTabLink) => {
+        currentTabLink.addEventListener('click', (event) => {
+            let lastActiveTabLink = filterNavLinksParentWrapper.querySelector('.active');
+            if (!currentTabLink.classList.contains('active')) {                
+                lastActiveTabLink.classList.remove('active');
+                currentTabLink.classList.add('active');
+                currentTabFilter = currentTabLink.dataset.filter;                
+            }
+            displayTasks();
+        });
+    });
+};
 
 // Function definition to create task data in Local Storage
 const setToLocalStorage = () => {
@@ -50,29 +69,36 @@ const displayTasks = () => {
     let taskListHTML = ''; 
     todoListDataContainerGlobal.forEach((currentElement,index) => {
         let taskStatus = currentElement.isTaskChecked ? "task-checked" : "";
-        taskListHTML = `
-        <li class="list-group-item" data-id="${index}">
-            <p class="task_text ${taskStatus}">
-                ${currentElement.text}
-            </p>
-            <button class="btn action-btn">
-                <img src="./img/dots.png" alt="">
-            </button>
-            <ul class="action-list">
-                <li>Edit</li>
-                <hr>
-                <li>Delete</li>
-            </ul>
-        </li>
-        ` + taskListHTML;
+        if((currentTabFilter === "all") 
+        || (currentTabFilter === "completed" && currentElement.isTaskChecked) 
+        || (currentTabFilter === "pending" && !currentElement.isTaskChecked)) {            
+            taskListHTML = `
+            <li class="list-group-item" data-id="${index}">
+                <p class="task_text ${taskStatus}">
+                    ${currentElement.text}
+                </p>
+                <button class="btn action-btn">
+                    <img src="./img/dots.png" alt="">
+                </button>
+                <ul class="action-list">
+                    <li>Edit</li>
+                    <hr>
+                    <li>Delete</li>
+                </ul>
+            </li>
+            ` + taskListHTML;
+        } 
     });
+    if(!taskListHTML) {
+        taskListHTML = `<p class="empty-list">Empty List!</p>`;
+        doubleClickSuggestion.style.opacity = "0";
+    }
     tabContentList.innerHTML = taskListHTML;
     actionBtnFunctionality();
 };
 
 // Function definition for deleting each task
 const deleteTask = (deleteTaskIndex) => {
-    console.log(deleteTaskIndex);
     todoListDataContainerGlobal.splice(deleteTaskIndex, 1);
     setToLocalStorage();
     displayTasks();
@@ -81,6 +107,7 @@ const deleteTask = (deleteTaskIndex) => {
 // Letting all the DOM elements to be loaded first
 document.addEventListener('DOMContentLoaded', function() {
     getFromLocalStorage();
+    filterTask();
     displayTasks();    
 
     // Event listner for input form to add and edit each task
@@ -102,10 +129,11 @@ document.addEventListener('DOMContentLoaded', function() {
             setToLocalStorage();
             taskInputValue.value = "";
             displayTasks();
+            doubleClickSuggestion.style.opacity = "1";
+            emptyTaskValue.style.opacity = '0';
         } else {
-            console.log("No value");
+            emptyTaskValue.style.opacity = '1';
         }
-
     });
 });
 
@@ -117,7 +145,7 @@ const actionBtnFunctionality = () => {
         currentElement.addEventListener('click', (event) => {
             event.stopPropagation();
             let lastActiveActionList = tabContentList.getElementsByClassName("active")[0];
-            if (lastActiveActionList) {
+            if (lastActiveActionList && lastActiveActionList !== actionList) {
                 lastActiveActionList.classList.remove("active");
             }
             if (!actionList.classList.contains('active')) {
@@ -141,11 +169,3 @@ const actionBtnFunctionality = () => {
         });
     });
 };
-
-
-
-// actionBtnAll.forEach((currentElement) => {
-//     if (event.target !== currentElement) {                    
-//         currentElement.nextElementSibling.classList.remove('active');
-//     }
-// });

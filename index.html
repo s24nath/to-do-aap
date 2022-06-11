@@ -14,25 +14,26 @@
 
 <body>
     <div class="container">
-        <form action="#" class="custom_form row custom_row pt-5" id="adding_task">
+        <form action="#" class="custom_form row custom_row pt-5" id="adding_task">            
             <div class="form-group col-md-9">
                 <input type="text" class="form-control" id="task_input"/>
+                <small id="empty_task_value" class="text-danger empty_task_value">Please enter task name!</small>
             </div>
             <div class="col-md-3">                
                 <button type="submit" class="btn btn-success task-submit-btn">Add Task</button>
             </div>
         </form>
         <div class="row custom_row">
-            <div class="col-md-12">                
-                <ul class="nav nav-tabs custom_nav_tabs">
+            <div class="col-md-12">                               
+                <ul id="navigation_tab_section" class="nav nav-tabs custom_nav_tabs">
                     <li class="nav-item">
-                        <a class="nav-link active" href="#">All</a>
+                        <a class="nav-link filter_nav_link active" data-filter= "all" href="#">All</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Completed</a>
+                        <a class="nav-link filter_nav_link" data-filter= "completed" href="#">Completed</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Link</a>
+                        <a class="nav-link filter_nav_link" data-filter= "pending" href="#">Pending</a>
                     </li>
                 </ul>
             </div>
@@ -41,8 +42,9 @@
         <div class="row custom_row">
             <div class="col-md-12">    
                 <ul id="tab_content_list" class="p-0">
-
+                    
                 </ul>
+                <p id="double_click_suggestion"><small>*Double click to check task</small></p>
             </div>
         </div>
     </div>
